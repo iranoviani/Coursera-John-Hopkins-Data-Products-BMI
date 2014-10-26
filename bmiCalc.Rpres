@@ -1,0 +1,61 @@
+BMI Calculator
+========================================================
+author: Ira Noviani
+date: October 26, 2014
+
+The App in A Nutshell
+========================================================
+Health has been one of the favorite subject being researched on, discussed, and written about as the paramount importance of health in human life, it has been taken for granted in everyday life.
+
+This app will enable the users to just spend as little as 5 minutes to **quickly check** their Body Mass Index (BMI), a measure of relative one's weight based on mass and height). The app also provides **dual measurement system** - the standard/imperial and the metric - so that the users can key in their data in the system that they are used to. The result of the calculation is presented in **concise format**, including the prediction of body fat.
+
+
+BMI Calculation
+========================================================
+The BMI is calculated using the following formula with the example of male, aged 29 years old, with the weight of 80 kg (154 lbs) and the height of 175 cm (5'9"):
+```{r echo = FALSE}
+bmi_category_name = c("Very severely underweight", "Severely underweight", "Underweight", "Normal (healthy weight)", "Overweight", "Obese Class I (Moderately obese)", "Obese Class II (Severely obese)", "Obese Class III (Very severely obese)")
+mass_kg <- 80
+height_cm <- 175
+age <- 29
+gender <- "male"
+
+height_m <- height_cm / 100
+bmi_value <- mass_kg/(height_m ^ 2)
+
+bmi_min_value = c(0, 15, 16, 18.5, 25, 30, 35, 40)
+bmi_max_value = c(14.9, 15.9, 18.4, 24.9, 29.9, 34.9, 39.9, 50)
+bmi_table <- data.frame(bmi_category_name, bmi_min_value, bmi_max_value)
+bmi_category_name <- bmi_table[bmi_table$bmi_min_value <= round(bmi_value, digits = 1) & bmi_table$bmi_max_value >= round(bmi_value, digits = 1), "bmi_category_name"]
+```
+
+$\mathrm{BMI} = \frac{\text{mass}(\text{kg})}{\left(\text{height}(\text{m})\right)^2}$
+
+$\mathrm{BMI} = \frac{\text{mass}(\text{lb})}{\left(\text{height}(\text{in})\right)^2}\times 703$
+
+which will give us the BMI value of `r round(bmi_value, digits=1)` that falls under `r toString(bmi_category_name)` category
+
+
+BMI Prime
+========================================================
+The app gives the indicator of BMI Prime which is the ratio of actual BMI to upper limit BMI (which is defined at the level of 25 or the upper limit of **`r bmi_table[bmi_table$bmi_max_value == 24.9, "bmi_category_name"]`** category). Hence, taking the previous example, the system will calculate that the user is `r round(bmi_value/25, digits = 0)`% over the upper mass limit. 
+
+
+Body Fat Prediction
+========================================================
+While BMI does not take into account the age and gender of the users, the body fat prediction adds useful information and it is calculated using the following formula:
+
+$Adult Body Fat Percentage = (1.20 x BMI) + (0.23 x Age) - (10.8 x Gender) - 5.4$
+If gender is male then it will be multiply by 1, if female then 0.
+
+``` {r echo = FALSE}
+body_fat_value <- (1.2 * bmi_value) + (0.23 * age) - (10.8 * ifelse(gender == "male", 1, 0)) - 5.4
+```
+
+The same user on the example will have `r round(body_fat_value, digits = 1)`% body fat. The app, however, does not discuss further on body fat category for the first phase of app development.
+
+
+Reference
+========================================================
+- Deurenberg P, Weststrate JA, Seidell JC. March 1991. Body mass index as a measure of body fatness: age- and sex-specific prediction formulas. Retrieved from http://www.halls.md/bmi/fat.htm
+- Body mass index. (n.d.). Retrieved October 26, 2014 from the Body mass index Wiki: http://en.wikipedia.org/wiki/Body_mass_index

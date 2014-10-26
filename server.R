@@ -25,6 +25,7 @@ bmi_max_value = c(14.9, 15.9, 18.4, 24.9, 29.9, 34.9, 39.9, 50)
 
 bmi_table <- data.frame(bmi_category_name, bmi_min_value, bmi_max_value)
 
+
 shinyServer(
     function(input, output) {
         bmi_value <- reactive({as.numeric(
